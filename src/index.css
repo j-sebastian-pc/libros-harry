@@ -1,0 +1,87 @@
+/* Estilos generales */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f3f3f3;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+  color: #333;
+  text-align: center;
+}
+
+h2 {
+  color: #333;
+  margin-top: 20px;
+}
+
+hr {
+  border: 1px solid #ccc;
+}
+
+
+/* Estilos de la lista de libros */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.book-image {
+  max-width: 100px;
+  margin-right: 20px;
+}
+
+strong {
+  font-weight: bold;
+}
+
+/* Estilos de botones */
+button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Estilos de carrito */
+span {
+  margin: 0 10px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* Estilos para el botón de carrito */
+button:empty::before {
+  content: "Carrito";
+}
+
+button:empty:hover::before {
+  content: "Ir al carrito";
+}
