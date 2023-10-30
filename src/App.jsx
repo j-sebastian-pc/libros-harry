@@ -15,7 +15,7 @@ function App() {
     async function fetchLibros() {
       try {
         const response = await axios.get('http://localhost:3000/api/libros');
-        setLibros(response.data.libros );
+        setLibros(response.data.libros);
         setIsLoading(false);
       } catch (error) {
         setError(error);
@@ -31,40 +31,41 @@ function App() {
     setTotalAPagar(total);
   }, [carrito]);
 
-  const agregarAlCarrito = (libro) => {
-    const carritoActualizado = [...carrito];
-    const libroExistenteIndex = carritoActualizado.findIndex((item) => item.id === libro.id);
+/* agregar al carrito */ 
 
-    if (libroExistenteIndex !== -1) {
-      carritoActualizado[libroExistenteIndex].cantidad += 1;
-    } else {
-      carritoActualizado.push({ ...libro, cantidad: 1 });
-    }
-
+const agregarAlCarrito = (libro) => {
+  const libroExistente = carrito.find((item) => item.id === libro.id);
+  if (libroExistente) {
+    const carritoActualizado = carrito.map((item) =>
+      item.id === libro.id ? { ...item, cantidad: item.cantidad + 1 } : item
+    );
     setCarrito(carritoActualizado);
+  } else {
+    setCarrito([...carrito, { ...libro, cantidad: 1 }]);
+  }
 
-    const librosActualizados = libros.map((item) => {
-      if (item.id === libro.id) {
-        const cantidadDisponible = item.cantidadDisponible - 1;
-        if (cantidadDisponible < 0) {
-          toast.error(`¡${libro.libro} está agotado!`);
-          return { ...item, cantidadDisponible: 0 };
-        }
-        return { ...item, cantidadDisponible };
+  const librosActualizados = libros.map((item) => {
+    if (item.id === libro.id) {
+      const cantidadDisponible = item.cantidadDisponible - 1;
+      if (cantidadDisponible < 0) {
+        toast.error(`${libro.libro} está agotado!`);
+        return { ...item, cantidadDisponible: 0, agotado: true };
       }
-      return item;
-    });
+      return { ...item, cantidadDisponible };
+    }
+    return item;
+  });
 
-    setLibros(librosActualizados);
+  setLibros(librosActualizados);
+  toast.success(`${libro.libro} agregado al carrito`);
+};
 
-    toast.success(`${libro.libro} agregado al carrito`);
-  };
+  /*disminuir cantidad*/ 
 
   const disminuirCantidad = (libro) => {
-    const carritoActualizado = [...carrito];
-    const libroExistenteIndex = carritoActualizado.findIndex((item) => item.id === libro.id);
-
+    const libroExistenteIndex = carrito.findIndex((item) => item.id === libro.id);
     if (libroExistenteIndex !== -1) {
+      const carritoActualizado = [...carrito];
       const libroExistente = carritoActualizado[libroExistenteIndex];
       if (libroExistente.cantidad === 1) {
         carritoActualizado.splice(libroExistenteIndex, 1);
@@ -84,6 +85,8 @@ function App() {
     }
   };
 
+  /* eliminar del carrito*/
+
   const eliminarDelCarrito = (libro) => {
     const carritoActualizado = carrito.filter((item) => item.id !== libro.id);
     setCarrito(carritoActualizado);
@@ -96,9 +99,10 @@ function App() {
     });
 
     setLibros(librosActualizados);
-
     toast.error(`${libro.libro} eliminado del carrito`);
   };
+
+  /* realizar la compra*/
 
   const realizarCompra = () => {
     if (carrito.length === 0) {
@@ -130,6 +134,8 @@ function App() {
     toast.success("Compra realizada con éxito.");
   };
 
+    /* mostrar carrito  */
+
   const mostrarCarritoHandler = () => {
     setMostrarCarrito(!mostrarCarrito);
   };
@@ -159,6 +165,7 @@ function App() {
                 {item.libro} - Cantidad: {item.cantidad}
                 <button onClick={() => disminuirCantidad(item)}>Disminuir</button>
                 <button onClick={() => eliminarDelCarrito(item)}>Eliminar</button>
+                {item.agotado && <span> - Agotado</span>}
               </li>
             ))}
           </ul>
@@ -179,7 +186,7 @@ function App() {
             <div>
               <strong>Libro:</strong> {libro.libro}
               <br />
-              <strong>Cantidad disponible:</strong> {libro.cantidad}
+              <strong>Cantidad disponible:</strong> {libro.cantidadDisponible === 0 ? "Agotado" : libro.cantidadDisponible}
               <br />
               <strong>Precio:</strong> ${parseFloat(libro.precio).toFixed(2)}
               <br />
@@ -198,7 +205,6 @@ function App() {
           </li>
         ))}
       </ul>
-
       <ToastContainer />
     </div>
   );
