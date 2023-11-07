@@ -14,7 +14,7 @@ function App() {
   useEffect(() => {
     async function fetchLibros() {
       try {
-        const response = await axios.get();
+        const response = await axios.get('http://localhost:3000/api/libros');
         setLibros(response.data.libros);
         setIsLoading(false);
       } catch (error) {
